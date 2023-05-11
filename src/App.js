@@ -29,7 +29,8 @@ function App() {
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-       {isLoading && <RotatingLines strokeColor="gold"/>}
+       {isLoading && movies.length > 0 && <RotatingLines strokeColor="gold"/>}
+       {!isLoading && movies.length === 0 && <p>No movies were fetched yet.</p> }
        {!isLoading && <MoviesList movies={movies} />} 
       </section>
     </React.Fragment>
