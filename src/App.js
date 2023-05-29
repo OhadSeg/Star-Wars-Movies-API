@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { RotatingLines } from "react-loader-spinner";
-import MoviesList from "./components/MoviesList";
+import MoviesList from "./components/MoviesList/MoviesList";
+import AddMovie from "./components/AddMovie/AddMovie"
 import "./App.css";
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchMoviesHandler = useCallback(async() => {
+  const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -39,14 +40,21 @@ function App() {
       setError(error.message);
     }
     setIsLoading(false);
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
 
+  function addMovieHandler(movie) {
+    console.log(movie);
+  }
+
   return (
     <React.Fragment>
+      <section>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
