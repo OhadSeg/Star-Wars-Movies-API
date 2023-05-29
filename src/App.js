@@ -46,14 +46,51 @@ function App() {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
 
-  function addMovieHandler(movie) {
-    console.log(movie);
+  async function addMovieHandler(movie) {
+    const response = await fetch('https://star-wars-react-http-e373f-default-rtdb.firebaseio.com/movies.json', {
+      method: 'POST',
+      body: JSON.stringify(movie),
+      Headers:{'Content-Type': 'application/json'}
+    });
+    const data = await response.json();
+    console.log(data);
   }
+
+  const fetchPostedMovieHandler = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('https://star-wars-react-http-e373f-default-rtdb.firebaseio.com/movies.json');
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      const data = await response.json();
+
+      const loadedMovies = [];
+
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
+
+      setMovies((prevMovies) => [...prevMovies, ...loadedMovies]);
+      
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  }, []);
 
   return (
     <React.Fragment>
       <section>
         <AddMovie onAddMovie={addMovieHandler} />
+        <button onClick={fetchPostedMovieHandler}>Fetch Posted Movie</button>
       </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
